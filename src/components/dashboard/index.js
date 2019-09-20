@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Container } from './styles'
+import { Container, Anchor } from './styles'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Box from '@material-ui/core/Box'
@@ -48,6 +48,7 @@ export const Dashboard = () => {
       <TabPanel value={value} index={1}>
         Parte de google
       </TabPanel>
+      <Anchor to='/login' onClick={() => window.localStorage.clear()}>Cerrar sesion</Anchor>
     </Container>
 
   )
