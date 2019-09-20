@@ -11,7 +11,7 @@ export const Signup = props => {
     <Container>
       <form onSubmit={handleSubmit}>
         <Card>
-          <Title>inicia sesion</Title>
+          <Title>Registro!!</Title>
           <Input
             id='passwordSignup'
             name='name'
@@ -51,10 +51,12 @@ export const Signup = props => {
             onChange={handleInputChange}
             required
           />
-          <button type='submit'>Sign Uddp</button>
+          <SignUpBtn variant='contained' color='primary' type='submit'>
+            Registrate
+          </SignUpBtn>
+          <Anchor to='/login'>Ya tienes una cuenta?</Anchor>
         </Card>
       </form>
-      <Anchor to='/login'>Ya tienes una cuenta?</Anchor>
     </Container>
   )
 }

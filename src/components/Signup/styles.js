@@ -33,16 +33,8 @@ export const Title = styled.h3`
   text-align: center;
 `
 
-export const LoginBtn = styled(Button)`
+export const SignUpBtn = styled(Button)`
   align-self: center;
-  margin-top: 15px !important;
-`
-
-export const SignUpBtn = styled(Link)`
-  margin-top: 10px;
-  text-align: center;
-  text-decoration: none;
-  color: #000;
 `
 
 export const Alert = styled.p`
