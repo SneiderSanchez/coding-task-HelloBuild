@@ -1,10 +1,11 @@
 import React from 'react'
-import { Container, Card, Title, SignUpBtn, Input, Anchor } from './styles'
-export const Signup = props => {
+import { Container, Card, Title, LoginBtn, Anchor, Alert, Input } from './styles'
+export const Login = props => {
   const {
     inputs,
     handleSubmit,
-    handleInputChange
+    handleInputChange,
+    loginError
   } = props
 
   return (
@@ -12,19 +13,6 @@ export const Signup = props => {
       <form onSubmit={handleSubmit}>
         <Card>
           <Title>inicia sesion</Title>
-          <Input
-            id='passwordSignup'
-            name='name'
-            /* helperText='nombre' */
-            /* error={touched.password && Boolean(errors.password)} */
-            value={inputs.name}
-            label='Nombre'
-            type='text'
-            margin='normal'
-            variant='outlined'
-            onChange={handleInputChange}
-            required
-          />
           <Input
             id='emailSignup'
             name='email'
@@ -51,10 +39,14 @@ export const Signup = props => {
             onChange={handleInputChange}
             required
           />
-          <button type='submit'>Sign Uddp</button>
+          <LoginBtn variant='contained' color='primary' type='submit'>
+            Iniciar sesion
+          </LoginBtn>
+          {loginError.error ? <Alert>{loginError.message}</Alert> : null}
+          <Anchor to='/signup'>No tienes cuenta?</Anchor>
         </Card>
       </form>
-      <Anchor to='/login'>Ya tienes una cuenta?</Anchor>
     </Container>
+
   )
 }

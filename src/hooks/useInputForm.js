@@ -8,8 +8,8 @@ const useSignUpForm = (initialValues, callback) => {
     callback(inputs)
   }
   const handleInputChange = (event) => {
-    event.persist()
-    setInputs(inputs => ({ ...inputs, [event.target.name]: event.target.value }))
+    const { name, value } = event.target
+    setInputs(prevState => ({ ...prevState, [name]: value }))
   }
   return {
     handleSubmit,

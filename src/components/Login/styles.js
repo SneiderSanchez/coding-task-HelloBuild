@@ -54,7 +54,6 @@ export const Alert = styled.p`
 export const Input = styled(TextField)`
   width: 70%
 `
-
 export const Anchor = styled(Link)`
   text-align: center;
   text-decoration: none;

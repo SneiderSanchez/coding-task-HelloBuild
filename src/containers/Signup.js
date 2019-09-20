@@ -1,22 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Signup as SignupComponent } from '../components/Signup'
-import useSignUpForm from '../hooks/useSignUpForm'
-
+import useInputForm from '../hooks/useInputForm'
+import { Redirect } from '@reach/router'
+const initialState = { name: '', email: '', password: '' }
 export const Signup = () => {
+  const [created, setCreated] = useState(false)
   const signup = info => {
     Object.keys(info).forEach((key) => {
       window.localStorage.setItem(key, info[key])
     })
-    window.location.reload(false)
+    alert('Creado Con exito')
+    setCreated(true)
   }
 
-  const { inputs, handleInputChange, handleSubmit } = useSignUpForm({ name: '', email: '', password: '' }, signup)
-
+  const { inputs, handleInputChange, handleSubmit } = useInputForm(initialState, signup)
   return (
-    <SignupComponent
-      inputs={inputs}
-      handleInputChange={handleInputChange}
-      handleSubmit={handleSubmit}
-    />
+    created
+      ? <Redirect to='/login' noThrow />
+      : <SignupComponent inputs={inputs} handleInputChange={handleInputChange} handleSubmit={handleSubmit} />
   )
 }
