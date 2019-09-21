@@ -26,7 +26,6 @@ export const Login = props => {
     }
   }
   const { inputs, handleInputChange, handleSubmit } = useInputForm({ email: '', password: '' }, loginCallback)
-  console.log(inputs)
   return (
     logged
       ? <Redirect to='/' noThrow />

@@ -3,7 +3,7 @@ import { Login } from '../containers/Login'
 import { useUserValue } from '../context/userContext'
 
 export const PrivateRoute = props => {
-  // para el cambio de vista puede implementarse un loader
+  // For the navigation whe can implement a loader
   const [{ user }, dispatch] = useUserValue()
   useEffect(() => {
     const localStorageEmail = window.localStorage.getItem('email')
