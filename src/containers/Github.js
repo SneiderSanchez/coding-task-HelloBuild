@@ -1,58 +1,62 @@
 import React, { useEffect } from 'react'
 import { Github as GitHubComponent } from '../components/gitHub'
-import { gql } from 'apollo-boost'
-import { useQuery } from '@apollo/react-hooks'
+import ApolloClient, { gql, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost'
+
+import { useQuery, ApolloProvider } from '@apollo/react-hooks'
 
 export const Github = props => {
   const urlParams = props.location.href
   console.log('las parasdklmjasijokd')
   console.log(urlParams)
+  const getToken = () => {
+    const token = window.localStorage.getItem('token')
+    console.log(token ? `Bearer ${token}` : '')
+    return token ? `Bearer ${token}` : ''
+  }
+
+  const defaultClient = new ApolloClient({
+    uri: 'https://api.github.com/graphql',
+    request: (operation) => {
+      operation.setContext({
+        headers: {
+          authorization: getToken()
+        }
+      })
+    }
+  })
+  /*   const defaultClient = new ApolloClient({
+    uri: 'https://api.github.com/graphql',
+    request: async (operation) => {
+      const token = window.localStorage.getItem('token')
+      operation.setContext({
+        headers: {
+          authorization: token
+        }
+      })
+    }
+  }) */
+
   useEffect(() => {
     if (urlParams.includes('token')) {
       const temp = urlParams.split('token=')[1]
       console.log(temp)
-      fetch(`https://github.com/login/oauth/access_token?client_id=59e2eb0fba1f774b5c2e&client_secret=fadba40e98ae3bdf917c81032cc76fc2fb8f6b6e&code=${temp}`, {
+      fetch('http://localhost:3031/github/apitoken', {
         method: 'POST',
-        headers: {
-          'Access-Control-Allow-Origin': 'http://localhost:8080'
-        }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          oauthToken: temp
+        })
       }).then(res => res.json())
         .catch(error => console.error('Error:', error))
-        .then(response => console.log('Success:', response))
+        .then(response => {
+          window.localStorage.setItem('token', response.token)
+          console.log('Success:', response)
+        })
     }
-  })
-
-  if (props.token) {
-    const listRepos = gql`
-    {
-      search(type: REPOSITORY, query: "language:Javascript", first: 10) {
-        nodes {
-          ... on Repository {
-            id
-            nameWithOwner
-            url
-            descriptionHTML
-          }
-        }
-      }
-    }
-    `
-    const { loading, error, data } = useQuery(listRepos)
-
-    if (loading) {
-      console.log('loading')
-    }
-    if (error) {
-      console.log('Error :(')
-      console.log(error)
-    }
-    console.log(data)
-  } else {
-    console.log('no hay codigo :(')
-  }
-  /*   useEffect(() => {
-  }) */
+  }, [defaultClient])
   return (
-    <GitHubComponent />
+    <ApolloProvider client={defaultClient}>
+      <GitHubComponent />
+    </ApolloProvider>
   )
 }

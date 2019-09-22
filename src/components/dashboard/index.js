@@ -38,15 +38,13 @@ export const Dashboard = props => {
 
   return (
     <NavigationContainer value={value} onChange={handleChange} showLabels>
-      <ApolloProvider client={defaultClient}>
-        <BottomNavigationAction
-          component={Link}
-          to='/github'
-          label='GitHub'
-          value='Github'
-          icon={<GithubIcon />}
-        />
-      </ApolloProvider>
+      <BottomNavigationAction
+        component={Link}
+        to='/github'
+        label='GitHub'
+        value='Github'
+        icon={<GithubIcon />}
+      />
       <BottomNavigationAction
         component={Link}
         to='/googlecalendar'
