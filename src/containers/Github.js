@@ -4,6 +4,24 @@ import { gql } from 'apollo-boost'
 import { useQuery } from '@apollo/react-hooks'
 
 export const Github = props => {
+  const urlParams = props.location.href
+  console.log('las parasdklmjasijokd')
+  console.log(urlParams)
+  useEffect(() => {
+    if (urlParams.includes('token')) {
+      const temp = urlParams.split('token=')[1]
+      console.log(temp)
+      fetch(`https://github.com/login/oauth/access_token?client_id=59e2eb0fba1f774b5c2e&client_secret=fadba40e98ae3bdf917c81032cc76fc2fb8f6b6e&code=${temp}`, {
+        method: 'POST',
+        headers: {
+          'Access-Control-Allow-Origin': 'http://localhost:8080'
+        }
+      }).then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => console.log('Success:', response))
+    }
+  })
+
   if (props.token) {
     const listRepos = gql`
     {
@@ -30,7 +48,7 @@ export const Github = props => {
     }
     console.log(data)
   } else {
-    alert('no hay codigo :(')
+    console.log('no hay codigo :(')
   }
   /*   useEffect(() => {
   }) */

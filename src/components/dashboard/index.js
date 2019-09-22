@@ -1,36 +1,29 @@
-import React, { useState } from 'react'
-import { Container, Anchor } from './styles'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import Box from '@material-ui/core/Box'
-import Typography from '@material-ui/core/Typography'
-import { Github } from '../../containers/Github'
+import React, { useState, useEffect } from 'react'
+import { NavigationContainer, Anchor } from './styles'
 import { ApolloProvider } from '@apollo/react-hooks'
 import ApolloClient from 'apollo-boost'
-import { GoogleCalendar } from '../../containers/GoogleCalendar'
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
+import { Link, navigate } from '@reach/router'
 
-/* import GithubIcon from '@material-ui/icons/Github'
-import GoogleCalendarIcon from '@material-ui/icons/GoogleCalendar' */
-
-function TabPanel (props) {
-  console.log(props)
-  const { children, value, index, ...other } = props
-
-  return (
-    <Typography
-      component='div'
-      role='tabpanel'
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}
-    >
-      <Box p={3}>{children}</Box>
-    </Typography>
-  )
-}
+import GithubIcon from '../../icons/Github'
+import GoogleCalendarIcon from '../../icons/GoogleCalendar'
 
 export const Dashboard = props => {
+  const [token, setToken] = useState({ api: null, token: null })
+  const urlParams = props.location.href
+  useEffect(() => {
+    console.log(urlParams)
+    if (urlParams) {
+      if (urlParams.includes('googleapis')) {
+        navigate(`/googlecalendar?token=${urlParams.split('access_token=')[1].split('&')[0]}`)
+      } else if (urlParams.includes('code')) {
+        /*         setToken({ api: 1, token: urlParams.split('code=')[1] }) */
+        navigate(`/github?token=${urlParams.split('code=')[1]}`)
+      }
+      console.log(token)
+    }
+  }, [urlParams])
+
   const gitToken = props.location.href.split('=')[1]
   const defaultClient = new ApolloClient({
     uri: 'https://api.github.com/graphql',
@@ -44,27 +37,24 @@ export const Dashboard = props => {
   }
 
   return (
-    <ApolloProvider client={defaultClient}>
-      <Container square>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant='fullWidth'
-          indicatorColor='secondary'
-          textColor='secondary'
-        >
-          <Tab label='Github' id='tab-0' aria-controls='tabpanel-0' /* icon={<GithubIcon />} */ />
-          <Tab label='Google Calendar' id='tab-1' aria-controls='tabpanel-1' /* icon={<GoogleCalendarIcon />} */ />
-        </Tabs>
-        <TabPanel value={value} index={0}>
-          <Github token={gitToken} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <GoogleCalendar />
-        </TabPanel>
-        <Anchor to='/login' onClick={() => window.localStorage.clear()}>Cerrar sesion</Anchor>
-      </Container>
-    </ApolloProvider>
+    <NavigationContainer value={value} onChange={handleChange} showLabels>
+      <ApolloProvider client={defaultClient}>
+        <BottomNavigationAction
+          component={Link}
+          to='/github'
+          label='GitHub'
+          value='Github'
+          icon={<GithubIcon />}
+        />
+      </ApolloProvider>
+      <BottomNavigationAction
+        component={Link}
+        to='/googlecalendar'
+        label='GoogleCalendar'
+        value='GoogleCalendar'
+        icon={<GoogleCalendarIcon />}
+      />
+    </NavigationContainer>
 
   )
 }
