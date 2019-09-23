@@ -1,16 +1,34 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Github as GitHubComponent } from '../components/gitHub'
-import ApolloClient, { gql, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost'
-
-import { useQuery, ApolloProvider } from '@apollo/react-hooks'
+import { Unauthorized } from '../components/Unautorized'
+import ApolloClient, { gql } from 'apollo-boost'
+import { navigate } from '@reach/router'
+import { ApolloProvider } from '@apollo/react-hooks'
+import { Query } from 'react-apollo'
 
 export const Github = props => {
   const urlParams = props.location.href
-  console.log('las parasdklmjasijokd')
-  console.log(urlParams)
+  const reposQuery = gql`
+  {
+    viewer {
+      login
+      avatarUrl
+      repositories(first: 100) {
+        totalCount
+        nodes {
+          owner {
+            login
+            avatarUrl
+          }
+          nameWithOwner
+          description
+        }
+      }
+    }
+  }`
+  const [loading, setLoading] = useState(false)
   const getToken = () => {
     const token = window.localStorage.getItem('token')
-    console.log(token ? `Bearer ${token}` : '')
     return token ? `Bearer ${token}` : ''
   }
 
@@ -24,39 +42,55 @@ export const Github = props => {
       })
     }
   })
-  /*   const defaultClient = new ApolloClient({
-    uri: 'https://api.github.com/graphql',
-    request: async (operation) => {
-      const token = window.localStorage.getItem('token')
-      operation.setContext({
-        headers: {
-          authorization: token
-        }
-      })
-    }
-  }) */
+  const handleLogout = async () => {
+    const temp = window.localStorage.removeItem('token')
+    /*     const deleteToken = await fetch(`https://github.com/applications/59e2eb0fba1f774b5c2e/tokens/${temp}`, {
+      method: 'DELETE'
+    })
+    const response = await deleteToken.json()
+    console.log(response) */
+    navigate('/')
+  }
 
-  useEffect(() => {
-    if (urlParams.includes('token')) {
-      const temp = urlParams.split('token=')[1]
-      console.log(temp)
-      fetch('http://localhost:3031/github/apitoken', {
+  const getApiToken = async () => {
+    try {
+      const token = urlParams.split('token=')[1]
+      const requestEvents = await fetch('http://localhost:3031/github/apitoken', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          oauthToken: temp
+          oauthToken: token
         })
-      }).then(res => res.json())
-        .catch(error => console.error('Error:', error))
-        .then(response => {
-          window.localStorage.setItem('token', response.token)
-          console.log('Success:', response)
-        })
+      })
+      const response = await requestEvents.json()
+      window.localStorage.setItem('token', response.token)
+      setLoading(true)
+    } catch (error) {
+      console.log(error)
     }
-  }, [defaultClient])
+  }
+
+  useEffect(() => {
+    if (urlParams.includes('token')) {
+      getApiToken()
+    }
+  }, [])
   return (
     <ApolloProvider client={defaultClient}>
-      <GitHubComponent />
+      {
+        window.localStorage.getItem('token') && loading
+          ? (
+            <Query query={reposQuery}>
+              {({ loading, error, data }) => {
+                if (loading) return 'Loading...'
+                if (error) return `Error! ${error.message}`
+                if (data) return <GitHubComponent handleLogout={handleLogout} data={data.viewer} />
+              }}
+            </Query>
+          ) : (
+            <Unauthorized type='github' />
+          )
+      }
     </ApolloProvider>
   )
 }

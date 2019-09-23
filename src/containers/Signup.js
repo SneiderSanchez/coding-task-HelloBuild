@@ -9,7 +9,6 @@ export const Signup = () => {
     Object.keys(info).forEach((key) => {
       window.localStorage.setItem(key, info[key])
     })
-    alert('Creado Con exito')
     setCreated(true)
   }
 

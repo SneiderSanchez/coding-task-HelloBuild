@@ -1,25 +1,33 @@
-import Paper from '@material-ui/core/Paper'
-import BottomNavigation from '@material-ui/core/BottomNavigation'
+import { BottomNavigation, Container, CardHeader, Button } from '@material-ui/core'
 import styled from 'styled-components'
-import { Link } from '@reach/router'
 
-export const Container = styled(Paper)`
-flexGrow: 1
+export const ContainerMenu = styled(Container)`
+flexGrow: 1;
+margin-top:3rem;
 `
 
-export const Anchor = styled(Link)`
+export const TitleMenu = styled(CardHeader)`
   text-align: center;
-  text-decoration: none;
-  margin-top: 10px;
-  color: #000;
 `
 
 export const NavigationContainer = styled(BottomNavigation)`
   flex:1;
   justify-content:center;
   text-align: center;
-
   text-decoration: none;
-  margin-top: 6rem;
+  margin-top: 2rem;
+  padding:4rem;
   color: #000;
+`
+export const GoogleCalendarImage = styled.img`
+width:100px;
+height:100px;
+`
+export const GithubImage = styled.img`
+width:100px;
+height:100px;
+`
+export const LogoutButton = styled(Button)`
+margin: 2rem auto !important;
+display: block !important;
 `

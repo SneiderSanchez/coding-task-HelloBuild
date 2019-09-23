@@ -12,7 +12,6 @@ export const Login = props => {
     const localStorageEmail = window.localStorage.getItem('email')
     const localStoragePassword = window.localStorage.getItem('password')
     if (localStorageEmail === info.email && localStoragePassword === info.password) {
-      alert('Paso la prueba')
       dispatch({
         type: 'setUser',
         user: {
